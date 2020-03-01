@@ -27,6 +27,7 @@ module NetSuite
         log_level: log_level,
         log: !silent, # turn off logging entirely if configured
       }.update(params))
+      client.wsdl.endpoint = client.wsdl.endpoint.to_s.sub('//webservices.netsuite.com/', "//#{wsdl_domain}/")
       cache_wsdl(client)
       return client
     end
@@ -125,6 +126,7 @@ module NetSuite
       else
         attributes[:wsdl] ||= begin
           if sandbox
+            $stderr.puts "SANDBOX"
             "https://webservices.sandbox.netsuite.com/wsdl/v#{api_version}_0/netsuite.wsdl"
           else
             "https://#{wsdl_domain}/wsdl/v#{api_version}_0/netsuite.wsdl"
@@ -139,6 +141,7 @@ module NetSuite
       else
         # if sandbox, this parameter is ignored
         if sandbox
+          $stderr.puts "SANDBOX"
           'webservices.sandbox.netsuite.com'
         else
           attributes[:wsdl_domain] ||= 'webservices.netsuite.com'
