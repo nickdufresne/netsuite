@@ -27,8 +27,14 @@ module NetSuite
         log_level: log_level,
         log: !silent, # turn off logging entirely if configured
       }.update(params))
-      client.wsdl.endpoint = client.wsdl.endpoint.to_s.sub('//webservices.netsuite.com/', "//#{wsdl_domain}/")
+      endpoint = client.wsdl.endpoint.to_s
+      endpoint.gsub!('//webservices.netsuite.com/', "//#{wsdl_domain}/")
+      endpoint.gsub!('//webservices.na0.netsuite.com/', "//#{wsdl_domain}/")
+      endpoint.gsub!('//webservices.na1.netsuite.com/', "//#{wsdl_domain}/")
+      endpoint.gsub!('//webservices.na2.netsuite.com/', "//#{wsdl_domain}/")
+      client.wsdl.endpoint = endpoint
       cache_wsdl(client)
+      
       return client
     end
 
